@@ -1,0 +1,94 @@
+
+digraph G {
+  bgcolor="darkgray:skyblue"
+  node [shape="ellipse", width="0.6", style="filled", fillcolor="#edad56", color="#edad56", penwidth="3"]
+  edge [color="#FCFCFC", penwidth="2", fontname="helvetica Neue Ultra Light"]
+
+  subgraph cluster_OMS {
+    style=filled;
+    color=lightgrey;
+    fillcolor="lightgrey";
+    label = "OMS"
+    node [fillcolor="lightyellow:lightskyblue"] 
+    Order_Created -> FR_Submitted [color="lightgrey"]
+    Order_Created -> Fraud_Hold 
+    Order_Amended -> Fraud_Hold
+    Order_Amended -> Amended [color="lightgrey"]
+    Fraud_Hold -> FR_Confirmed [color="lightgrey"] 
+    FR_Confirmed -> PO_Created [color="lightgrey"] 
+    PO_Created -> PO_Acknowledged [color="lightgrey"]  
+    PO_Acknowledged -> PO_Pick_Inprogress [color="lightgrey"] 
+    PO_Pick_Inprogress -> PO_Pick_Complete [color="lightgrey"] 
+    PO_Pick_Complete -> Customer_Picked [color="lightgrey"] 
+    PO_Pick_Complete -> Delivered [color="lightgrey"] 
+    PO_Pick_Complete -> Cancelled [color="lightgrey"] 
+    //Cancelled -> Cancelled_Due_To_Nill_Pick [color="lightgrey"] 
+    Cancelled -> Cancelled_Due_To_Substitution [color="lightgrey"]
+    
+  }
+
+  subgraph cluster_FMS {
+    style=filled;
+    color=lightgrey;
+    fillcolor="lightgrey";
+    label = "FMS"
+    node [fillcolor="lightyellow:lightblue"]
+    FR_Created -> Item_Enrichment_Success [color="lightgrey"] 
+    FR_Amended -> Item_Enrichment_Success [color="lightgrey"] 
+    Item_Enrichment_Success -> FO_Created [color="lightgrey"] 
+    FO_Created -> FO_Acknowledged [color="lightgrey"] 
+    FO_Acknowledged -> FO_Ready_To_Pick [color="lightgrey"] 
+    FO_Ready_To_Pick ->  FO_Pick_Begin [color="lightgrey"] 
+    FO_Pick_Begin -> FO_Pick_Complete [color="lightgrey"] 
+    FO_Pick_Complete -> FO_Order_Dispensed [color="lightgrey"] 
+    FO_Pick_Complete -> Nill_Pick [color="lightgrey"] 
+    FO_Pick_Complete -> Substituted [color="lightgrey"] 
+    
+  }
+  
+  subgraph cluster_GIF {
+    style=filled;
+    color=lightgrey;
+    fillcolor="lightgrey";
+    label = "GIF"
+    node [fillcolor="lightyellow:lightcyan"]
+    Created -> Released [color="lightgrey"] 
+    Released -> Read_To_Pick 
+    Read_To_Pick -> Pick_Begin 
+    Pick_Begin -> Pick_Review 
+    Pick_Review -> Pick_Review_Complete 
+    Pick_Review_Complete -> Pick_Complete 
+    Pick_Complete -> Dispensed 
+    Pick_Complete -> NilPicked 
+    Pick_Complete -> Substitution 
+    
+  }
+  
+Order_Created -> FR_Submitted [color="darkcyan"]
+FR_Submitted -> FR_Created [color="darkcyan"]
+Order_Amended -> Amended [color="darkcyan"]
+Amended -> FR_Amended [color="darkcyan"]
+FR_Created -> Item_Enrichment_Success [color="darkcyan"]
+FR_Amended -> Item_Enrichment_Success [color="darkcyan"] 
+Item_Enrichment_Success -> FO_Created [color="red"]
+Fraud_Hold -> FR_Confirmed [color="red"] 
+FR_Confirmed -> FO_Created [color="red"]
+FO_Created  -> Created [color="red"]
+FO_Created -> PO_Created [color="mediumpurple"]
+Released -> FO_Acknowledged [color="mediumpurple"]
+FO_Acknowledged -> PO_Acknowledged [color="mediumpurple"]
+Read_To_Pick -> FO_Ready_To_Pick [color="mediumpurple"]
+Pick_Begin -> FO_Pick_Begin [color="mediumpurple"]
+FO_Pick_Begin -> PO_Pick_Inprogress [color="mediumpurple"]
+Pick_Complete -> FO_Pick_Complete [color="mediumpurple"]
+FO_Pick_Complete -> PO_Pick_Complete [color="mediumpurple"]
+Dispensed -> FO_Order_Dispensed [color="mediumpurple"]
+FO_Order_Dispensed -> Customer_Picked [color="mediumpurple"]
+FO_Order_Dispensed -> Delivered [color="mediumpurple"]
+NilPicked -> Nill_Pick [color="mediumpurple"]
+Nill_Pick -> Cancelled [color="mediumpurple"] 
+Substitution -> Substituted [color="mediumpurple"]
+Substituted -> Cancelled_Due_To_Substitution [color="mediumpurple"]
+
+
+}

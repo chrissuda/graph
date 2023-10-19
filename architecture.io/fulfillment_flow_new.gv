@@ -1,0 +1,235 @@
+strict digraph prof {
+  ratio = fill;
+
+bgcolor="#2e3e56"
+  pad="0.5" /* add padding round the edge of the graph */
+
+  node [shape="box", width="0.6", style="filled", fillcolor="#edad56", color="#edad56", penwidth="3"]
+  edge [color="#FCFCFC", penwidth="2", fontname="helvetica Neue Ultra Light"]
+  
+  /*
+   List of all nodes
+   Explicitly Add the node if you want to add documentation
+   https://graphviz.org/doc/info/shapes.html
+  */
+
+ 
+/*
+  Grouping of nodes
+*/
+
+ subgraph cluster_customer {
+    style=filled;
+    color=lightgrey;
+    node [style=filled,color=white];
+    CXO [label="CXO"]
+    MyAccount [label="My Account"]
+    CPH [label="CPH"]
+    CheckIn [label="CheckIn"]
+    CCA [label="CCA"]
+    label = "Customer Facing";
+  }
+
+ subgraph cluster_custorder {
+    style=filled;
+    color=bisque4;
+    node [style=filled,color=bisque4];
+    OMS [label="OMS"]
+    OrderServices [label="Order Services"]
+    SmartComms [label="SmartComms"]
+    Raven [label="Raven"]
+    Plutus [label="Plutus"]
+    Accounting [label="Accounting"]
+    label = "Order Management Systems";
+  }
+ 
+ subgraph cluster_fulfillorder {
+    style=filled;
+    color=bisque4;
+    node [style=filled,color=bisque4];
+    FMS [label="FMS"]
+    FOCI [label="FOCI_HOLDS"]
+    Sourcing [label="Sourcing"]
+    GIFIntegrations [label="Store Fulfillment"]
+    FCIntegrations [label="1P Fulfillment"]
+    ACC [label="ACC Fulfillment"]
+    Bakery [label="Bakery Fulfillment"]
+    WirelessActivation [label="Wireless Fulfillment"]
+    MPIntegrations [label="MP Fulfillment"]
+    label = "Fulfillment Management Systems";
+  }
+
+ subgraph cluster_storeorder {
+    style=filled;
+    color=bisque4;
+    node [style=filled,color=bisque4];
+    GIFGateway [label="GIF Gateway"]
+    GIFHO [label="GIF HO"]
+    GIFRings [label="GIF Rings"]
+    label = "GIF";
+  }
+
+
+  CXO -> {OMS[style="dashed" color="red" fontcolor=whitesmoke]; CASPr[dir=both style="dashed" color="red" fontcolor=whitesmoke]; ROVr[dir=both style="dashed" color="red" fontcolor=whitesmoke];}
+
+  MyAccount -> {OMS[style="dashed" color="red" fontcolor=whitesmoke]; OrderServices[dir=both style="dashed" color="red" fontcolor=whitesmoke];}
+
+  CPH -> {OMS[style="dashed" color="red" fontcolor=whitesmoke]; OrderServices[dir=both style="dashed" color="red"fontcolor=whitesmoke];}
+
+  CheckIn -> {OrderServices[dir=both style="dashed" color="red" fontcolor=whitesmoke];}
+
+  CCA -> {OrderServices[dir=both style="dashed" color="red" fontcolor=whitesmoke] ; RAP [dir=both]; Chatbot ;  Help_Center; }
+
+  CASPr -> {ROVr [dir=both style="dashed" color="red" fontcolor=whitesmoke]; CASPr_Cosmos; GIR; CASPr_Oracle; CASPr_Cache; CASPr_AMQ;}
+  ROVr -> {LocationService; ROVr_Cosmos;}
+
+  OMS -> {FMSKafka [shape=Mrecord, style="dotted", color="yellow",fontcolor="white",label="<f0> FR|<f1>FO|<f2>Amend"]; IQS[dir=both style="dashed" color="red" fontcolor=whitesmoke] ;  Fraud[dir=both style="dashed" color="red" fontcolor=whitesmoke];OrderServices[dir=both style="dashed" color="red" fontcolor=whitesmoke] ; RAP ;
+            Accounting ; Plutus ; Omninode; Raven[style="dashed" color="red" fontcolor=whitesmoke] ; OMS_Oracle [color="blue"] ; GIS; ODS; OMS_Cosmos; OMS_C;}
+  
+  FMSKafka -> {FMS [style="dashed" color="red" fontcolor=whitesmoke];}
+
+  Fraud -> {Fraud_Oracle;}
+ 
+   
+  CASPrCutoff -> {BaaS ; ROVrCutoff [style="dashed" color="red" fontcolor=whitesmoke] ; CASPr_Oracle;}
+  ROVrCutoff -> {ROVr_Cosmos;}
+  
+  Accounting -> {PromotionEngine [dir=both]; Shipprice [dir=both] ; PangaeaTax [dir=both]; Accounting_Cosmos; Accounting_AzureSQL;}
+  Plutus -> {PangaeaPayment; Plutus_Cosmos; Plutus_Oracle;}
+  Omninode -> {OmninodeService; Omninode_Cosmos; Omninode_Cache;}
+  Raven -> {SmartComms[style="dashed" color="red" fontcolor=whitesmoke]; Raven_Cosmos; Raven_AzureSQL;}
+  SmartComms -> {SmartComms_Cosmos;}
+  Shipprice -> {Shipprice_C; Shipprice_Cache;}
+  RAP -> {RAP_AzureSQL;}
+
+  OrderServices -> {OrderServices_C ; OrderServices_Solr;}
+  IQS -> {IQS_C;}
+  
+
+  FMS -> {Sourcing; IQS[dir=both style="dashed" color="red" fontcolor=whitesmoke]; CASPrCutoff [style="dashed" color="red" fontcolor=whitesmoke]; 
+           FOCI ; SNO; GIFIntegrations; MPIntegrations ; FCIntegrations; Sortation; Orion; LOBO; Gscope [dir=both] ; 
+           MDM [dir=both]; Dispatcher ; Planner; GIS; ODS; FMS_Cosmos; FMS_ES; FMS_ASB; ACC; Bakery; WirelessActivation;}
+
+  GIFIntegrations -> {GIFGateway[style="dashed" color="red" fontcolor=whitesmoke] ;}
+
+  GIFGateway -> { GIFHO [style="dashed" color="red" fontcolor=whitesmoke];} 
+  GIFHO -> {GIFOrderManager ; GIFOrderReceiver; GIFEIM; GIFPortal; GIFRings[style="dashed" color="red" fontcolor=whitesmoke]; }
+  GIFOrderManager -> {GIFOrderManager_C; GIFOrderManager_MSSQL;}
+  GIFOrderReceiver -> {GIFOrderReceiver_MSSQL;}
+  GIFEIM -> {IQS [dir=both style="dashed" color="red" fontcolor=whitesmoke] ; SmartSubs [dir=both] ; GIR [dir=both]; Modular [dir=both] ;}
+  GIFPortal -> {GIFPortal_MSSQL;}
+
+  GIFRings -> {FOS; PickAdvisor; OLCM; SparkShopper[style="dashed" color="red" fontcolor=whitesmoke]; Staging[style="dashed" color="red" fontcolor=whitesmoke]; Dispense; 
+                 GIFBootstrap[style="dashed" color="red" fontcolor=whitesmoke]; GIFUIBFF; QuaityCheck[style="dashed" color="red" fontcolor=whitesmoke]; GIFPRAAS [style="dashed" color="red" fontcolor=whitesmoke];
+                 TCdevices; BYOD ; GIFRings_MSSQL; GIFRings_ES;}
+  PickAdvisor -> {Optima;}
+  GIFBootstrap -> {MDM; ClientCenter; GIFBootstrap_MSSQL}
+  GIFUIBFF -> {APIProxy[dir=both style="dashed" color="red" fontcolor=whitesmoke]; GIFReporting; GIFUIBFF_Cache ; GIFUIBFF_Cosmos; GIFUIBFF_ES;}
+  GIFPRAAS -> {MDM;ClientCenter; GIFPRAAS_Cache; GIFPRAAS_MSSQL;}
+
+
+  FCIntegrations -> {Scheafer; Thor; Hawkeye; Endgame; eGLS ; DSV; Bedrock;}
+  MPIntegrations -> {PartnerAPIs; SellerPortal;}
+  
+  
+  Dispatcher -> {Planner; SmartComms; Dispatcher_Oracle;}
+  Planner -> { ROVr; Planner_Cosmos;}
+ 
+  
+  Sourcing -> {MCSE[dir=both style="dashed" color="red" fontcolor=whitesmoke];} 
+  
+  MCSE -> {Wakanda[dir=both style="dashed" color="red" fontcolor=whitesmoke] ; FCAP [dir=both]; CCAP[dir=both]; MCSE_C; SNO}
+  
+  SNO -> {SNO_Cosmos; SNO_ES;}
+  
+  FCAP -> {Orion; FMS ; FCAP_Cosmos;}
+  CCAP -> {Orion; FMS ; CCAP_Cosmos;}
+  
+  Wakanda -> {OASIS[dir=both style="dashed" color="red" fontcolor=whitesmoke]; Killmonger[dir=both style="dashed" color="red" fontcolor=whitesmoke]; MBaku[dir=both style="dashed" color="red" fontcolor=whitesmoke]; EnterpriseInventory;
+              Wakanda_Cosmos; Wakanda_Cache;}
+ 
+  EnterpriseInventory -> {EI_C;}
+  
+  Orion -> {Dispatcher; OrderServices; Vulcan ; Orion_Cosmos;} 
+ 
+  // Cosmos DBs 
+  OMS_Cosmos [label="Cosmos" shape="cylinder" style="solid" color="mintcream" fontcolor="orange"]
+  FMS_Cosmos [label="Cosmos" shape="cylinder" style="solid" color="mintcream" fontcolor="orange"]
+  CASPr_Cosmos [label="Cosmos" shape="cylinder" style="solid" color="mintcream" fontcolor="orange"]
+  ROVr_Cosmos [label="Cosmos" shape="cylinder" style="solid" color="mintcream" fontcolor="orange"]
+  SmartComms_Cosmos [label="Cosmos" shape="cylinder" style="solid" color="mintcream" fontcolor="orange"]
+  Accounting_Cosmos [label="Cosmos" shape="cylinder" style="solid" color="mintcream" fontcolor="orange"]
+  Plutus_Cosmos [label="Cosmos" shape="cylinder" style="solid" color="mintcream" fontcolor="orange"]
+  Omninode_Cosmos [label="Cosmos" shape="cylinder" style="solid" color="mintcream" fontcolor="orange"]
+  Raven_Cosmos [label="Cosmos" shape="cylinder" style="solid" color="mintcream" fontcolor="orange"]
+  Wakanda_Cosmos [label="Cosmos" shape="cylinder" style="solid" color="mintcream" fontcolor="orange"]
+  Planner_Cosmos [label="Cosmos" shape="cylinder" style="solid" color="mintcream" fontcolor="orange"]
+  SNO_Cosmos [label="Cosmos" shape="cylinder" style="solid" color="mintcream" fontcolor="orange"]
+  FCAP_Cosmos [label="Cosmos" shape="cylinder" style="solid" color="mintcream" fontcolor="orange"]
+  CCAP_Cosmos [label="Cosmos" shape="cylinder" style="solid" color="mintcream" fontcolor="orange"]
+  Orion_Cosmos [label="Cosmos" shape="cylinder" style="solid" color="mintcream" fontcolor="orange"]
+  GIFUIBFF_Cosmos [label="Cosmos" shape="cylinder" style="solid" color="mintcream" fontcolor="orange"]
+
+
+  
+  // Oracle DB
+
+  OMS_Oracle [label="Oracle-Shards" shape="cylinder" color="blue"]
+  CASPr_Oracle [label="Oracle" shape="cylinder" color="blue"]
+  Plutus_Oracle [label="Oracle-Shards" shape="cylinder" color="blue"]
+  Fraud_Oracle [label="Oracle" shape="cylinder" ]
+  Dispatcher_Oracle [label="Oracle-Rings" shape="cylinder" ]
+
+
+
+  // Azure SQL 
+  RAP_AzureSQL [label="AzureSQL" shape="cylinder" style="dotted" color="whitesmoke" fontcolor="yellow" ]     
+  Accounting_AzureSQL [label="AzureSQL" shape="cylinder" style="dotted" color="whitesmoke" fontcolor="yellow" ]    
+  Raven_AzureSQL [label="AzureSQL" shape="cylinder" style="dotted" color="whitesmoke" fontcolor="yellow" ]     
+
+  // MS SQL
+  GIFOrderManager_MSSQL [label="MS SQL" shape="cylinder" ]  
+  GIFOrderReceiver_MSSQL [label="MS SQL" shape="cylinder" ]  
+  GIFPortal_MSSQL [label="MS SQL" shape="cylinder" ]
+  GIFRings_MSSQL [label="MS SQL" shape="cylinder" ]
+  GIFBootstrap_MSSQL [label="MS SQL" shape="cylinder" ]
+  GIFPRAAS_MSSQL [label="MS SQL" shape="cylinder" ]
+
+
+  // Cassandra DBs
+  OrderServices_C [label="Cassandra" shape="cylinder" style="solid" color="gray" fontcolor="white"]
+  OMS_C [label="Cassandra" shape="cylinder" style="solid" color="gray" fontcolor="white"]
+  Shipprice_C [label="Cassandra" shape="cylinder" style="solid" color="gray" fontcolor="white"]
+  MCSE_C [label="Cassandra" shape="cylinder" style="solid" color="gray" fontcolor="white"]
+  EI_C [label="Cassandra" shape="cylinder" style="solid" color="gray" fontcolor="white"]
+  GIFOrderManager_C [label="Cassandra" shape="cylinder" style="solid" color="gray" fontcolor="white"]
+  IQS_C [label="Cassandra" shape="cylinder" style="solid" color="gray" fontcolor="white"]
+  
+
+  // Cache 
+  CASPr_Cache [label="MeghaCache" shape="cylinder" style="solid" color="green" fontcolor="yellow"]
+  Shipprice_Cache [label="MeghaCache" shape="cylinder" style="solid" color="green" fontcolor="yellow"]
+  Wakanda_Cache [label="MeghaCache" shape="cylinder" style="solid" color="green" fontcolor="yellow"]
+  Omninode_Cache [label="MeghaCache" shape="cylinder" style="solid" color="green" fontcolor="yellow"]
+  GIFUIBFF_Cache [label="MeghaCache" shape="cylinder" style="solid" color="green" fontcolor="yellow"]
+  GIFPRAAS_Cache [label="MeghaCache" shape="cylinder" style="solid" color="green" fontcolor="yellow"]
+  
+  // SOLR 
+  OrderServices_Solr [label="SOLR" shape="cylinder" style="dotted" color="yellow" fontcolor="white"]
+
+  // Elastic Search 
+  SNO_ES [label="ElasticSearch" shape="cylinder"]
+  FMS_ES [label="ElasticSearch" shape="cylinder"]
+  GIFRings_ES [label="ElasticSearch" shape="cylinder"]
+  GIFUIBFF_ES [label="ElasticSearch" shape="cylinder"]
+
+  //Azure Service Bus
+  FMS_ASB [label="Azure Service Bus" shape="doubleoctagon"]
+
+  //AMQ
+  CASPr_AMQ [label="AMQ" shape="doubleoctagon"]
+
+   
+
+ 
+}

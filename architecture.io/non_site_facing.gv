@@ -1,0 +1,37 @@
+strict digraph prof {
+	ratio = fill;
+
+bgcolor="#2e3e56"
+	pad="0.5" /* add padding round the edge of the graph */
+
+	node [shape="circle", width="0.6", style="filled", fillcolor="#edad56", color="#edad56", penwidth="3"]
+	edge [color="#FCFCFC", penwidth="2", fontname="helvetica Neue Ultra Light"]
+  
+  /*
+   List of all nodes
+   Explicitly Add the node if you want to add documentation
+
+  */
+
+  IRO [id="iro" wm_title="testing custom attr" wm_description="description" wm_feature="marketplace"]
+  Rollups [ wm_feature="marketplace"]
+
+/*
+  Grouping of nodes
+*/
+
+  IRO -> {Product_Store; Offer_Store; Rollups ;Assets_Store ; PTC ; CCCP_PRS ;GeoZip ; GBAS ; MCSE ; Ship_Price ; Program_flags ;}
+
+  GBAS -> {LIMO ; DCC ; Oasis_IMS ;}
+
+  Gatekeeper -> IQS ;
+  Rollups -> IQS ;
+  AIRE -> IQS ; //No change
+  IQS -> Uber;
+
+  Indexing -> Uber;
+  Uber -> {Product_Store ; Offer_Store ; Rollups ; LIMO ; PTC ; Oasis_IMS ;};
+
+
+}
+

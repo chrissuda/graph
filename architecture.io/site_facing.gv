@@ -1,0 +1,361 @@
+strict digraph prof {
+	ratio = fill;
+
+bgcolor="#2e3e56"
+	pad="0.5" /* add padding round the edge of the graph */
+
+	node [shape="box", width="0.6", style="filled", fillcolor="#edad56", color="#edad56", penwidth="3"]
+	edge [color="#FCFCFC", penwidth="2", fontname="helvetica Neue Ultra Light"]
+  
+  /*
+   List of all nodes
+   Explicitly Add the node if you want to add documentation
+   https://graphviz.org/doc/info/shapes.html
+  */
+
+  IRO [id="iro" wm_title="testing custom attr" wm_description="description" wm_feature="marketplace,ads"]
+  OMS_Prod [shape="Msquare"]
+  OMS_Cons [shape="Msquare"]
+  CPH []
+/*
+  Grouping of nodes
+*/
+  subgraph cluster_web {
+    style=filled;
+    color=lightgrey;
+    node [style=filled,color=white];
+    web_Home [label="Home"]
+    web_Search [label="Search"]
+    web_Item [label="Item"]
+    web_Cart [label="Cart"]
+    web_Acc [label="My Acc"]
+    web_CXO [label="CXO"]
+    label = "web";
+  }
+
+  subgraph cluster_ios {
+    style=filled;
+    color=lightgrey;
+    node [style=filled,color=white];
+    ios_Home [label="Home"]
+    ios_Search [label="Search"]
+    ios_Item [label="Item"]
+    ios_Cart [label="Cart"]
+    ios_Acc [label="My Acc"]
+    ios_CXO [label="CXO"]
+    label = "IOS App";
+  }
+  subgraph cluster_android {
+    style=filled;
+    color=lightgrey;
+    node [style=filled,color=white];
+    and_Home [label="Home"]
+    and_Search [label="Search"]
+    and_Item [label="Item"]
+    and_Cart [label="Cart"]
+    and_Acc [label="My Acc"]
+    label = "Droid App";
+  }
+  subgraph cluster_providers {
+    style=filled;
+    color=lightgrey;
+    node [style=filled,color=white];
+    PayPal [label="PAYPAL"]
+    WorldPay [label="WORLDPAY"]
+    ChasePay [label="CHASEPAY"]
+    FirstData [label="FIRSTDATA"]
+    WellsForgo [label="WELLSFORGO"]
+    Solutran [label="SOLUTRAN"]
+    AccuaLink[label="ACCUALINK"]
+    Synchrony[label="SYNC"]
+    AMX [label="AMX"]
+    label = "GateWays";
+  }
+  ios_Home -> Home_GQL_OL;
+  ios_Search -> OL_Search;
+  ios_Item -> OL_Product;
+  ios_Cart -> {OL_Cart[style="dashed" color="red" fontcolor=whitesmoke];};
+  ios_Acc -> OL_Acc;
+  ios_CXO -> OL_CXO;
+
+  web_Home -> {
+    SSR_FE[style="dashed" color="red" fontcolor=whitesmoke];
+  }
+  web_Search -> {OL_Search ;s_typeahead;}
+  web_Item -> OL_Product;
+  web_Cart -> {OL_Cart[style="dashed" color="red" fontcolor=whitesmoke];}
+  web_Acc -> OL_Acc;
+  web_CXO -> OL_CXO;
+
+  SSR_FE->{Home_GQL_OL[style="dashed" color="red" fontcolor=whitesmoke];}
+
+/*
+  and_Home -> Home_GQL;
+  and_Search -> {Home_GQL; OL_Search;}
+  and_Item -> {Home_GQL; OL_Product;}
+  and_Cart -> OL_Cart;
+  and_Acc -> OL_Acc;
+*/
+  OL_Product -> {ItemService[style="dashed" color="red" fontcolor=whitesmoke ]; IDML; Ratings_Reviews; CLS; SWAG; UBS;}
+  SWAG->{SPADE;}
+  SPADE->{ABRAM;IRO}
+  ABRAM ->{VECTOR;ABRAMSQLDb;ABRAMDb;IRO;SPECTOR;}
+  VECTOR->{ADSSolr;}
+  OL_Search -> {s_preso;}
+  Home_GQL_OL -> {IAM [style="dashed" color="red" fontcolor=whitesmoke ]; Boot_strap[style="dashed" color="red" fontcolor=whitesmoke]; CCM2[style="dashed" color="red"fontcolor=whitesmoke]; CA[style="dashed" color="red"fontcolor=whitesmoke];Cust_Insight[style="dashed" color="red"fontcolor=whitesmoke] ; CLS[style="dashed" color="red"fontcolor=whitesmoke]; LOC_SVCS[style="dashed" color="red"fontcolor=whitesmoke]; IRO; Tempo; P13N; SWAG; s_ctx_svc;}
+  Boot_strap ->{CCM2;}
+  CCM2 ->{CCM2Db;CCM2Cache;}
+  Cust_Insight->{CIdb;}
+  P13N ->{P13Ndb;IRO;P13NCache}
+  CLS ->{Tempo[style="dashed" color="red" fontcolor=whitesmoke ]; CLE[style="dashed" color="red" fontcolor=whitesmoke URL="https://en.wikipedia.org/wiki/Vincent_van_Gogh"];}
+  CLE->{IRO[style="dashed" color="red"fontcolor=whitesmoke];P13N;}
+  Tempo ->{TempoCache;}
+  OL_Acc -> {CPH;}
+  CA ->{CAdb;}
+  IAM ->{IAMCache; IAMdb;}
+  LOC_SVCS -> {ROVER[style="dashed" color="red"fontcolor=whitesmoke];GEO_LOC[style="dashed" color="red"fontcolor=whitesmoke]; LOC_SVCSCache[style="dashed" color="red"fontcolor=whitesmoke]; AVS[style="dashed" color="red"fontcolor=whitesmoke];OmniNode[style="dashed" color="red"fontcolor=whitesmoke];}
+  ROVER ->{ROVERDb;}
+  OmniNode ->{OmniNodedb;OmniNodeCache;}
+  AVS ->{PB[style="dashed" color="red" fontcolor=whitesmoke ];}
+  Rollups [wm_feature="marketplace"]
+  GBAS [wm_feature="marketplace"]
+  // Ads [wm_feature="ads"]
+  IRO -> {Product_Store; Offer; Rollups[style="dashed" color="red"fontcolor=whitesmoke] ; Pricing[style="dashed" color="red"fontcolor=whitesmoke]; Assets_Store ; PTC;GeoZip ; GBAS[style="dashed" color="red"fontcolor=whitesmoke] ; Ship_Price;}
+  GBAS -> GBAS[label="0.1",weight="0.1" ];
+  IRO ->{IROCache;}
+  GeoZip->{GEOZipCache;}
+  GBAS -> {LIMO [style="dashed" color="red"fontcolor=whitesmoke]; DCC ; Wakanda[style="dashed" color="red"fontcolor=whitesmoke] ;}
+  Wakanda ->{WakandaCache; Wakandadb;WakandaL1Cache}
+  LIMO ->{LIMOCache; LIMOdb; LIMOL1Cache;}
+  REME ->{REMEDb[style="dashed" color="red"fontcolor=whitesmoke];}
+  Offer ->{Offerdb;}
+  Product_Store ->{Productdb;}
+  Pricing ->{Pricingdb;}
+  MCSE ->{MCSEdb;}
+  Assets_Store ->{Assetdb;}
+  Rollups->{RollUpdb;}
+  PTC->{PTCdb;}
+  Ship_Price->{SPDb}
+  PB ->{PBfs;}
+  OL_CXO ->{CXO_BE;OmniNode;Cart_BE;}
+  CXO_BE ->{Unified_Promise;TenderExe;Prom;Tax;CA;OMS_QUEUENode;ESP_WARP;CXODataAccessLayer;}
+  OMS_QUEUENode->{OMS;}
+  Tax ->{Taxfs;}
+  CXODataAccessLayer ->{CXODb;}
+  TenderExe ->{TenderExeDb;UnifiedPayment}
+  UnifiedPayment -> {TransactinService;}
+  TransactinService->{UPPDb,PROVIDERS;Voltage, P2PE, CCDBA,CCDBP,UPP_QUEUE;}
+
+  PROVIDERS ->{ChasePay[ltail="CHASEPAY" lhead="cluster_providers"];}
+  
+  UPP_QUEUE->{PE,Fraud,Settlement,CBB;}
+  Settlement->{SETDBA,SETDBP;}
+  Voltage ->{VoltageDBA,VoltageDBP;}
+  Prom ->{PromoDb;PromoCache;}
+  OL_Cart -> {Cart_BE[style="dashed" color="red"fontcolor=whitesmoke];REME[style="dashed" color="red"fontcolor=whitesmoke];Cust_Insight[style="dashed" color="red"fontcolor=whitesmoke]; MYChoice[style="dashed" color="red"fontcolor=whitesmoke];}
+  Cart_BE -> {CartCache; WPLUS[style="dashed" color="red"fontcolor=whitesmoke] ; PE[style="dashed" color="red"fontcolor=whitesmoke]  ;Unified_Promise[style="dashed" color="red"fontcolor=whitesmoke]; CASPr; TenderPlanner[style="dashed" color="red"fontcolor=whitesmoke]; ItemService[style="dashed" color="red"fontcolor=whitesmoke]; CartDataAccessLayer; CA[style="dashed" color="red"fontcolor=whitesmoke]; }
+  WPLUS ->{WPlusDb;}
+  CASPr ->{CASPrDbA[style="dashed" color="red"fontcolor=whitesmoke]; CASPrDbP[style="dashed" color="orange"fontcolor=whitesmoke]; CASPrCache;}
+  CartDataAccessLayer->{Cartdb[style="dashed" color="red"fontcolor=whitesmoke];}
+  ItemService ->{IRO[style="dashed" color="red"fontcolor=whitesmoke];WPLUS;Cust_Insight;Seller;LOC_SVCS}
+  OMS_Prod -> OMS_Cons[style="dashed"];
+  OMS_Cons -> OMS;
+  MYChoice -> {MYChoiceDb}
+  TenderPlanner -> {TPDB[style="dashed" color="red"fontcolor=whitesmoke];}
+  //TenderExecutor -> {TEDB[style="dashed" color="red"fontcolor=whitesmoke];}
+  PE ->{PECache; PEDb[style="dashed" color="red"fontcolor=whitesmoke];}
+
+  Unified_Promise -> {MCSE ; GBAS ; Ship_Price ;}
+
+  FMS -> {CASPr ; GIF ; Wakanda ; IQS ; MCSE ;}
+
+  OMS -> {FMS ;Wakanda ;OS ; Orion ; Dispatcher ; ROVR ; GIF ; MCSE ; RAP;}
+
+  RAP -> {OS ; OMS ; Plutus ; Inkiru ; IQS ; mGlider ; RLOG ; Accounting ; Vulcan ;}
+
+  //OS -> RAP ;
+  //MyAccount -> RAP ;
+  //CCA -> RAP ;
+  //ODS -> RAP ;
+  //GD -> RAP ;
+  //Easy_Returns -> RAP ;
+
+  //CCA -> {RAP ; OMS ;  GSCOPE ;  Chatbot ;  Help_Center ;}
+
+  //Gatekeeper -> IQS ;
+  //Rollups -> IQS ;
+  AIRE -> IQS ; //No change
+
+  OL_Acc -> {Easy_Returns ; MyAccount ; CCA ;}
+
+  GSCOPE -> Wakanda ;
+
+  CPH -> Return_proxy ;
+  //Smart_Comms -> OMS ;
+
+  //MP_Payments -> {OMS; RAP; OS}
+
+  //Dispute -> MP_Payments
+  GD -> MP_Payments
+
+  Partner_Svcs  -> {OMS; MP_Payments; Dispute; Partner_API; RAP;}
+
+  Partner_API -> {FMS; OMS; RAP; ORION;}
+
+  //Dispute -> {OMS; RAP; MP_Payments; GD;}
+
+  //
+  OMS_QUEUENode [shape=Mrecord, style="dotted", color="yellow",fontcolor="white",label="<f0> DQ|<f1>Q|<f2>EQ"]
+  UPP_QUEUE [shape=Mrecord, style="dotted", color="yellow",fontcolor="white",label="<f0> DQ|<f1>Q|<f2>EQ"]
+  // 
+
+  subgraph cluster_searchbe {
+    style=filled;
+    color=lightgrey;
+    node [style=filled,color=white];
+    s_typeahead [label="Type Ahead"]
+    s_typeahead -> {s_spellcheck,SearchL1Cache,SearchSpellCheckCache}
+    s_ctx_svc [label="Search Context"]
+    s_preso [label="SIS/Preso"]
+    s_perceive [label="Perceive"]
+    s_polaris [label="Polaris"]
+    s_spellcheck [label="SpellCheck"]
+    label = "Search Customer Facing";
+  }
+
+  //s_typeahead -> {s_spellcheck,SearchL1Cache,SearchSpellCheckCache}
+  s_ctx_svc -> {s_polaris}
+  s_preso -> {s_polaris, IRO}
+  s_polaris -> {s_spellcheck, s_index_db, s_perceive, P13N,SearchCouchBaseCache,SearchCouchBaseBRCache,SearchCouchBaseQSCache;}
+  
+  /* DB setup */ 
+
+  s_index_db [label="index" shape="cylinder"]
+  hubble [label="Hubble" shape="cylinder"]
+
+  //File Systems
+
+  PBfs [label="PB-Files", shape="folder",style="dotted", color="yellow2",fontcolor="white"]
+  Taxfs [label="Tax-Files", shape="folder",style="dotted", color="yellow2",fontcolor="white"]  
+
+  // Cosmos DBs 
+  MyChoicedb [label="COSMOS",shape="cylinder",style="solid", color="mintcream",fontcolor="orange"]
+  CAdb [label="COSMOS",shape="cylinder",style="solid", color="mintcream",fontcolor="orange"]
+  Wakandadb [label="COSMOS",shape="cylinder",style="solid", color="mintcream",fontcolor="orange"]
+  LIMOdb [label="COSMOS",shape="cylinder",style="solid", color="mintcream",fontcolor="orange"]
+  IAMdb [label="COSMOS",shape="cylinder",style="solid", color="mintcream",fontcolor="orange"]
+  Cartdb [label="COSMOS",shape="cylinder",style="solid", color="mintcream",fontcolor="orange"]
+  Checkoutdb [label="COSMOS",shape="cylinder",style="solid", color="mintcream",fontcolor="orange"]
+  CIdb [label="COSMOS",shape="cylinder",style="solid", color="mintcream",fontcolor="orange"]
+  WPlusDb [label="COSMOS",shape="cylinder",style="solid", color="mintcream",fontcolor="orange"]
+  CCM2Db [label="COSMOS",shape="cylinder",style="solid", color="mintcream",fontcolor="orange"]
+  TPDB [label="COSMOS",shape="cylinder",style="solid", color="mintcream",fontcolor="orange"]
+  TEDB [label="COSMOS",shape="cylinder",style="solid", color="mintcream",fontcolor="orange"]
+  REMEDb [label="COSMOS",shape="cylinder",style="solid", color="mintcream",fontcolor="orange"]
+  MYChoiceDb[label="COSMOS",shape="cylinder",style="solid", color="mintcream",fontcolor="orange"]
+  ROVERDb[label="COSMOS",shape="cylinder",style="solid", color="mintcream",fontcolor="orange"]
+  CXODb[label="COSMOS",shape="cylinder",style="solid", color="mintcream",fontcolor="orange"]
+  TenderExeDb[label="COSMOS",shape="cylinder",style="solid", color="mintcream",fontcolor="orange"]
+
+  // Google Spanner RDBMS 
+
+  UPPDb[label="SPANNER",shape="cylinder",style="solid", color="orange",fontcolor="white"]
+
+  // Oracle DB
+
+  CASPrDbA [label="ORACLE-A" ,shape="cylinder"]
+  CASPrDbP [label="ORACLE-P" ,shape="cylinder",style="dotted"]
+  CCDBA [label="CC-ORACLE-A" ,shape="cylinder"]
+  CCDBP [label="CC-ORACLE-P" shape="cylinder",style="dotted",fontcolor="white"]
+  SETDBA [label="SET-ORACLE-A" ,shape="cylinder"]
+  SETDBP [label="SET-ORACLE-P" shape="cylinder",style="dotted",fontcolor="white"]
+  VoltageDBA [label="Voltage-ORACLE-A" ,shape="cylinder"]
+  VoltageDBP [label="Voltage-ORCALE-P" shape="cylinder",style="dotted",fontcolor="white"]
+
+  // Azure SQL 
+
+  ABRAMSQLDb [shape="cylinder" style="dotted" color="whitesmoke"fontcolor="yellow" label="AzureSQL"]  
+
+  // Cassandra C* DBs
+
+  RollUpdb [label="C*",shape="cylinder",style="solid", color="gray",fontcolor="white"]
+  Offerdb [label="C*",shape="cylinder",style="solid", color="gray",fontcolor="white"]
+  Sellerpdb [label="C*",shape="cylinder",style="solid", color="gray",fontcolor="white"]
+  MCSEdb [label="C*",shape="cylinder",style="solid", color="gray",fontcolor="white"]
+  Pricingdb [label="C*",shape="cylinder",style="solid", color="gray",fontcolor="white"]
+  Productdb [label="C*",shape="cylinder",style="solid", color="gray",fontcolor="white"]
+  MCSEdb [label="C*",shape="cylinder",style="solid", color="gray",fontcolor="white"]
+  Assetdb [label="C*",shape="cylinder",style="solid", color="gray",fontcolor="white"]
+  OmniNodedb [label="C*",shape="cylinder",style="solid", color="gray",fontcolor="white"]
+  PTCdb [label="C*",shape="cylinder",style="solid", color="gray",fontcolor="white"]
+  P13Ndb [label="C*",shape="cylinder",style="solid", color="gray",fontcolor="white"]
+  SPDb [label="C*",shape="cylinder",style="solid", color="gray",fontcolor="white"]
+  PEDb [label="C*",shape="cylinder",style="solid", color="gray",fontcolor="white"]
+  ABRAMDb [label="C*",shape="cylinder",style="solid", color="gray",fontcolor="white"]
+  PromoDb [label="C*",shape="cylinder",style="solid", color="gray",fontcolor="white"]
+
+
+  // Cache 
+  
+
+  IROCache [style="dashed",label="MeghaCache" shape="cylinder", color="green",fontcolor="yellow"]
+  WakandaCache [style="dashed",label="MeghaCache" shape="cylinder", color="green",fontcolor="yellow"]
+  LIMOCache [style="dashed",label="MeghaCache" shape="cylinder", color="green",fontcolor="yellow"]
+  IAMCache [style="dashed",label="MeghaCache" shape="cylinder", color="green",fontcolor="yellow"]
+  LOC_SVCSCache [style="dashed",label="MeghaCache" shape="cylinder", color="green",fontcolor="yellow"]
+  OmniNodeCache [style="dashed",label="MeghaCache" shape="cylinder", color="green",fontcolor="yellow"]
+  GEOZIPCache [style="dashed",label="MeghaCache" shape="cylinder", color="green",fontcolor="yellow"]
+  TempoCache [style="dashed",label="MeghaCache" shape="cylinder", color="green",fontcolor="yellow"]
+  WPlusCache [style="dashed",label="MeghaCache" shape="cylinder", color="green",fontcolor="yellow"]
+  GEOZipCache [style="dashed",label="MeghaCache" shape="cylinder", color="green",fontcolor="yellow"]
+  CCM2Cache [style="dashed",label="MeghaCache" shape="cylinder", color="green",fontcolor="yellow"]
+  CartCache [style="dashed",label="MeghaCache" shape="cylinder", color="green",fontcolor="yellow"]
+  PECache [style="dashed",label="MeghaCache" shape="cylinder", color="green",fontcolor="yellow"]
+  CASPrCache [style="dashed",label="MeghaCache" shape="cylinder", color="green",fontcolor="yellow"]
+  P13NCache [style="dashed",label="MeghaCache" shape="cylinder", color="green",fontcolor="yellow"]
+  SearchSpellCheckCache [style="dashed",label="MeghaCache" shape="cylinder", color="green",fontcolor="yellow"]
+  PromoCache [style="dashed",label="MeghaCache" shape="cylinder", color="green",fontcolor="yellow"]
+
+  //
+
+  // OMQueue[shape="Mrecord", label="{ enq | q | dq }",color"white"]
+
+  // L1 JVM Cache
+
+   SearchL1Cache [label="L1" color="yellow3", style="dashed", shape="diamond",weight="0.1" ,fontcolor="orange"]
+   WakandaL1Cache [label="L1" color="yellow3", style="dashed", shape="diamond",weight="0.1" ,fontcolor="orange"]
+   LIMOL1Cache [label="L1" color="yellow3", style="dashed", shape="diamond",weight="0.1" ,fontcolor="orange"]
+
+
+  // Couchbase Cache: 
+
+   SearchCouchBaseCache [label="SearchCouchBase" color="yellow3", style="dashed", shape="cylinder",weight="0.1" ,fontcolor="orange"]
+   SearchCouchBaseQSCache [label="SearchCouchBaseQS" color="yellow3", style="dashed", shape="cylinder",weight="0.1" ,fontcolor="orange"]
+   SearchCouchBaseBRCache [label="SearchCouchBaseBR" color="yellow3", style="dashed", shape="cylinder",weight="0.1" ,fontcolor="orange"]
+  //Access layer
+
+   CXODataAccessLayer [label="CXODBASS" color="yellow", style="dotted", shape="record",weight="0.1" ,fontcolor="orange"]
+   CartDataAccessLayer [label="CartDBASS" color="yellow", style="dotted", shape="record",weight="0.1" ,fontcolor="orange"]
+   
+
+  // SOLR 
+  ADSSolr [label="SOLR" shape="cylinder" style="dotted" color="yellow"fontcolor=white]
+
+  uber [label="Uber" shape="cylinder"]
+  ironbank [label="Taxonomy" shape="cylinder"]
+
+  subgraph cluster_searchoff {
+    style=filled;
+    color=lightgrey;
+    node [style=filled,color=white];
+    s_batch [label="Indexing"]
+    label = "Index Pipeline";
+  }
+
+  {hubble, uber, ironbank} -> s_batch [style="dashed" color="purple"]
+  s_batch -> s_index_db [style="dashed" color="purple"]
+// For Queueing 
+
+  
+}
+

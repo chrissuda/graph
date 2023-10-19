@@ -1,0 +1,122 @@
+strict digraph prof {
+	ratio = fill;
+
+bgcolor="#2e3e4e"
+	pad="0.5" /* add padding round the edge of the graph */
+
+	node [shape="circle", width="0.6", style="filled", fillcolor="#edad56", color="#edad56", penwidth="3"]
+	edge [color="#FCFCFC", penwidth="2", fontname="helvetica Neue Ultra Light"]
+  
+  /*
+   List of all nodes
+   Explicitly Add the node if you want to add documentation
+   https://graphviz.org/doc/info/shapes.html
+  */
+
+  Torbit_B[]
+  Torbit_G[]
+/*
+  Grouping of nodes
+*/
+  subgraph cluster_Blue {
+    style=filled;
+    color=lightgrey;
+    node [style=filled,color=white];
+    b_Home [label="Home"]
+    b_Search [label="Search"]
+    b_Item [label="Item"]
+    b_Cart [label="CXO"]
+    b_Acc [label="My Acc"]
+    b_Returns [label="Returns"]
+    b_Category [label="Category"]
+    b_Store [label="Store"]
+    b_Wireless_ESP [label="ESP UI"]
+    b_Topic [label="Topic"]
+    b_Deals [label="Deals"]
+    b_Cakes [label="Order Ahead"]
+    label = "Blue+";
+  }
+
+  Torbit_B -> b_Home [label="/"]
+  Torbit_B -> b_Search [label="/search"]
+  Torbit_B -> b_Item [label="/ip"]
+  Torbit_B -> b_Cart [label="/cart"]
+  Torbit_B -> b_Acc [label="/account"]
+  Torbit_B -> b_Returns [label="/return"]
+  Torbit_B -> b_Category [label="/cp"]
+  Torbit_B -> b_Store [label="/store"]
+  Torbit_B -> b_Wireless_ESP [label="/esp"]
+  Torbit_B -> b_Topic [label="/topic"]
+  Torbit_B -> b_Deals [label="/m/deals"]
+  Torbit_B -> b_Cakes [label="/order-ahead"]
+
+  {b_Home, b_Item, Preso_B, b_Topic, b_Deals} -> Quimby
+  {b_Search, b_Deals, b_Category} -> Preso_B
+  b_Item -> TF_Blue
+  b_Cart -> CxoV2
+  b_Acc -> CA 
+  b_Acc -> CPH
+  b_Store -> GSF
+  b_Wireless_ESP -> ESP_BE
+  b_Topic -> Topic_SVC
+  b_Returns -> Ret_Pxy
+
+  Ret_Pxy -> {CPH, RAP}
+
+  {Preso_B, Quimby, TF_Blue, CxoV2, Topic_SVC, b_Cakes} -> IRO_Blue
+  TF_Blue -> {Reviews, IDML}
+  Quimby -> {P13N_B, IRO_Blue}
+  Quimby -> Tempo [label="USGM tenant"]
+  CxoV2 -> OMS
+  b_Cakes -> {CxoV2, SICD, WOMS}
+
+  subgraph cluster_Glass {
+    style=filled;
+    color=lightgrey;
+    node [style=filled,color=white];
+    g_Home [label="Home"]
+    g_Search [label="Search"]
+    g_Item [label="Item"]
+    g_Cart [label="CXO"]
+    g_Acc [label="My Acc"]
+    g_Returns [label="Returns"]
+    g_Topic [label="Topic"]
+    label = "Glass";
+  }
+
+  Torbit_G -> g_Home [label="/" color="red"]
+  Torbit_G -> g_Search [label="/search" color="red"]
+  Torbit_G -> g_Item [label="/ip" color="red"]
+  Torbit_G -> g_Cart [label="/cart" color="red"]
+  Torbit_G -> g_Acc [label="/account" color="red"]
+  Torbit_G -> g_Returns [label="/return" color="red"]
+  Torbit_G -> b_Returns [label="/return/old" color="red"]
+  Torbit_G -> g_Topic [label="/topic" color="red"]
+  Torbit_G -> b_Category [label="/cp" color="red"]
+  Torbit_G -> b_Store [label="/store" color="red"]
+  Torbit_G -> b_Wireless_ESP [label="/esp" color="red"]
+  Torbit_G -> b_Deals [label="/m/deals" color="red"]
+  Torbit_G -> b_Cakes [label="/order-ahead" color="red"]
+  
+  g_Home -> OL_Content[color="red"]
+  g_Search -> OL_Search[color="red"]
+  g_Item -> OL_Product[color="red"]
+  g_Cart -> OL_CXO[color="red"]
+  g_Acc -> OL_Acc [color="red"]
+  g_Returns -> OL_Orders [color="red"]
+  g_Topic -> OL_Topic[color="red"]
+  
+  OL_Product -> {IRO_V3; IDML; Reviews;}[color="red"]
+  OL_Search -> Search_BE[color="red"]
+  OL_Content -> {IRO_V3; Tempo; P13N_G; Ads;}[color="red"]
+  OL_Content -> Tempo [label="Glass tenant"color="red"]
+  OL_Acc -> {CA; CPH;}[color="red"]
+  OL_Orders -> {CPH, RAP_G} [color="red"]
+
+
+  OL_CXO -> {CxoV3; IRO_V3}[color="red"]
+  OL_Topic -> {IRO_V3; Topic_SVC}[color="red"]
+
+  CxoV3 -> {IRO_V3; OMS2}[color="red"]
+}
+

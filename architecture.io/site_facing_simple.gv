@@ -1,0 +1,163 @@
+strict digraph prof {
+	ratio = fill;
+
+bgcolor="#D3D3D3"
+	pad="0.5" /* add padding round the edge of the graph */
+
+	node [shape="box", width="0.6", style="filled", fillcolor="#edad56", color="#edad56", penwidth="3"]
+	edge [color="#FCFCFC", penwidth="2", fontname="helvetica Neue Ultra Light"]
+  
+  /*
+   List of all nodes
+   Explicitly Add the node if you want to add documentation
+   https://graphviz.org/doc/info/shapes.html
+  */
+
+  IRO [id="iro" wm_title="testing custom attr" wm_description="description" wm_feature="marketplace,ads"]
+  CPH []
+/*
+  Grouping of nodes
+*/
+  subgraph cluster_ios {
+    style=filled;
+    color=grey;
+    node [style=filled,color=white];
+    ios_Home [label="Home"]
+    ios_Search [label="Search"]
+    ios_Item [label="Item"]
+    ios_Cart [label="Cart"]
+    ios_Acc [label="My Acc"]
+    ios_instru [label="Instrumentation"]
+    label = "Apps";
+  }
+/*
+  subgraph cluster_android {
+    style=filled;
+    color=grey;
+    node [style=filled,color=white];
+    and_Home [label="Home"]
+    and_Search [label="Search"]
+    and_Item [label="Item"]
+    and_Cart [label="Cart"]
+    and_Acc [label="My Acc"]
+    label = "Droid App";
+  }
+*/
+  ios_Home -> OL_Content;
+  ios_Search -> OL_Search;
+  ios_Item -> OL_Product;
+  ios_Cart -> OL_Cart;
+  ios_Acc -> OL_Acc;
+  ios_instru -> beacon_pipe;
+/*
+  and_Home -> OL_Content;
+  and_Search -> {OL_Content; OL_Search;}
+  and_Item -> {OL_Content; OL_Product;}
+  and_Cart -> OL_Cart;
+  and_Acc -> OL_Acc;
+*/
+  OL_Product -> {IRO; IDML; Ratings_Reviews;}
+  OL_Search -> s_preso;
+  OL_Content -> {IRO; Tempo; P13N; Ads; s_ctx_svc}
+  OL_Acc -> {CPH;}
+
+  LOC_SVCS -> {GSF; GEO_LOC;}
+
+  Rollups [wm_feature="marketplace"]
+  GBAS [wm_feature="marketplace"]
+  Ads [wm_feature="ads"]
+  IRO -> {Offer_Store; Rollups ; GBAS ; }
+
+  OL_Cart -> Cart_XO_BE ;
+  OMS_Q [shape="Msquare"]
+  Cart_XO_BE -> {IRO ; Unified_Promise ; OMS_Q ;}
+  OMS_Q -> OMS[style="dashed"];
+
+  OMS -> FMS [label="fulfillment req"]
+  OMS -> Accounting {label="charges.."}
+  OMS -> RAP {label="returns"}
+  OMS -> Smart_Comms {label="comms"}
+  FMS -> OMS [label="Order updates"]
+  FMS -> GIF [label="Store PO"]
+  FMS -> Sourcing
+  FMS -> Inventory
+  fms_ship [label="Shipment Services"]
+  FMS -> fms_ship
+  FMS -> Dispatcher
+  FMS -> Tracking
+  //OMS -> {FMS ;IMS ;OS ; Orion ; Dispatcher ; ROVR ; GIF ; MCSE ; RAP;}
+
+  //RAP -> {OS ; OMS ; Plutus ; Inkiru ; IQS ; mGlider ; RLOG ; Accounting ; Vulcan ;}
+
+  //OS -> RAP ;
+  MyAccount -> RAP ;
+  CCA -> RAP ;
+  //ODS -> RAP ;
+  //GD -> RAP ;
+  Easy_Returns -> RAP ;
+  CCA -> OMS [label="amends/cancel"]
+  //CCA -> {RAP ; OMS ;  GSCOPE ;  Chatbot ;  Help_Center ;}
+
+  //Gatekeeper -> IQS ;
+  Rollups -> IQS ;
+  //AIRE -> IQS ; //No change
+
+  OL_Acc -> {Easy_Returns ; MyAccount ; CCA ;}
+
+  //GSCOPE -> Oasis_IMS
+
+  CPH -> RAP ;
+
+
+  subgraph cluster_searchbe {
+    style=filled;
+    color=grey;
+    node [style=filled,color=white];
+    s_typeahead [label="Type Ahead"]
+    s_ctx_svc [label="Search Context"]
+    s_preso [label="SIS/Preso"]
+    s_perceive [label="Perceive"]
+    s_polaris [label="Polaris"]
+    s_spellcheck [label="SpellCheck"]
+    label = "Search Customer Facing";
+  }
+
+  s_typeahead -> {s_spellcheck}
+  s_ctx_svc -> {s_polaris}
+  s_preso -> {s_polaris, IRO}
+  s_polaris -> {s_spellcheck, s_index_db, s_perceive, P13N}
+
+  s_index_db [label="index" shape="cylinder"]
+  hubble [label="Hubble" shape="cylinder"]
+  uber [label="Uber" shape="cylinder"]
+
+  subgraph cluster_searchoff {
+    style=filled;
+    color=grey;
+    node [style=filled,color=white];
+    s_batch [label="Indexing"]
+    label = "Index Pipeline";
+  }
+
+  subgraph cluster_item_setup {
+    style=filled;
+    color=grey;
+    node [style=filled,color=white];
+    item_ingest [label="Ingestion Pipeline"]
+    ironbank [label="Taxonomy" shape="cylinder"]
+    item_setup [label="Item Setup"]
+    label = "Item Setup";
+  }
+
+  {hubble, uber} -> {s_batch, P13N, Ads} [style="dashed" color="purple"]
+  {ironbank} -> {s_batch, item_ingest} [style="dashed" color="purple"]
+  s_batch -> s_index_db [color="purple"]
+  uber -> Rollups [style="dashed" color="purple"]
+  uber -> P13N [style="dashed" color="purple"]
+  uber -> Ads [style="dashed" color="purple"]
+  item_ingest -> uber [color="purple"]
+  beacon_pipe [label="Beacons"]
+  beacon_pipe -> hubble [color="purple"]
+  item_setup -> item_ingest
+}
+
